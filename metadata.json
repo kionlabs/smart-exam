@@ -1,0 +1,6 @@
+{
+  "name": "시험지 분석기",
+  "description": "시험지 사진을 업로드하면 AI가 문항을 자동으로 인식하고 채점 및 분석 결과를 제공하는 서비스입니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

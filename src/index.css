@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-beige-bg: #f5f0eb;
+  --color-navy-main: #1a2744;
+  --color-orange-point: #f97316;
+  --font-sans: "Noto Sans KR", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* Custom background styles and smooth scroll bindings */
+body {
+  background-color: var(--color-beige-bg);
+  color: var(--color-navy-main);
+  font-family: var(--font-sans);
+}

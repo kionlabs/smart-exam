@@ -36,41 +36,57 @@ function getGeminiClient(): GoogleGenAI {
 // API endpoint for analyzing a test paper image
 app.post("/api/analyze", async (req, res) => {
   try {
-    const { image, mimeType } = req.body;
-    if (!image) {
-      return res.status(400).json({ error: "이미지 데이터가 누락되었습니다." });
+    const { image, mimeType, images } = req.body;
+    const imageParts: { inlineData: { data: string; mimeType: string } }[] = [];
+
+    // Helper to process single image and extract base64 + mimeType
+    const processImagePayload = (imgPayload: string, fallbackMime: string) => {
+      let base64Data = imgPayload;
+      let detectedMimeType = fallbackMime || "image/jpeg";
+      if (imgPayload.startsWith("data:")) {
+        const match = imgPayload.match(/^data:([^;]+);base64,(.+)$/);
+        if (match) {
+          detectedMimeType = match[1];
+          base64Data = match[2];
+        }
+      }
+      return { data: base64Data, mimeType: detectedMimeType };
+    };
+
+    if (images && Array.isArray(images)) {
+      for (const img of images) {
+        if (typeof img === "string") {
+          const res = processImagePayload(img, "image/jpeg");
+          imageParts.push({ inlineData: res });
+        } else if (img && typeof img === "object" && img.data) {
+          const res = processImagePayload(img.data, img.mimeType || "image/jpeg");
+          imageParts.push({ inlineData: res });
+        }
+      }
+    } else if (image) {
+      const res = processImagePayload(image, mimeType || "image/jpeg");
+      imageParts.push({ inlineData: res });
     }
 
-    // Handle data URL prefix
-    let base64Data = image;
-    let detectedMimeType = mimeType || "image/jpeg";
-    if (image.startsWith("data:")) {
-      const match = image.match(/^data:([^;]+);base64,(.+)$/);
-      if (match) {
-        detectedMimeType = match[1];
-        base64Data = match[2];
-      }
+    if (imageParts.length === 0) {
+      return res.status(400).json({ error: "이미지 데이터가 누락되었습니다." });
     }
 
     const ai = getGeminiClient();
     const prompt = 
-      "업로드된 시험지 이미지를 면밀히 확인하고 다음 내용을 작성해 주세요:\n" +
-      "1. 시험지가 다루고 있는 과목(subject) 및 개별 해설에서 알맞은 시험지 제목(title)을 작성해 주세요.\n" +
+      "업로드된 시험지 이미지 또는 PDF 문서를 수직/수평 정밀 스캔하여 다음 내용을 분석해 주세요:\n" +
+      "1. 시험지가 다루고 있는 과목(subject) 및 알맞은 시험지 제목(title)을 작성해 주세요.\n" +
       "2. 각 문제(문항 번호, 내용 요약, 학생 제출 답안, 올바른 정답)를 인식하여 정답 여부(status: 'correct' 혹은 'incorrect')를 판별해 주세요.\n" +
-      "3. 각 문제별로 풀이 방법 및 오답 원인을 명쾌하고 상세하게 한국어로 작성해 주세요 (explanation).\n" +
-      "4. 전체 문항 요약(전체수, 맞은수, 틀린수 및 100점 만점으로 계산한 환산 점수) 및 친절하고 다정한 격려의 한마디 총평(overallSummary)을 담아 주세요.\n" +
-      "5. 학생에게 맞춰진 강점 요약(strengths), 약점 요약(weaknesses), 그리고 향후 구체적인 오답 학습 전략(studyPlan) 리스트를 작성해 주세요.\n" +
+      "3. 각 문제별로 풀이 방법 및 오답 원인을 한국어로 아주 상세하게 작성하고, 이 문제가 위치한 페이지 번호(pageNumber, 1부터 시작)를 매핑해 주세요. (주의: 페이지 번호는 업로드된 이미지들의 순서 1, 2, 3.. 와 부합하도록 정확히 매치해 주세요.)\n" +
+      "4. 시험지가 만약 여러 페이지로 이루어져 있다면(여러 쪽의 PDF 또는 긴 문서 등), 각 페이지별(pageNumber) 핵심 대주제/소주제, 해당 페이지의 맞은수 및 틀린수, 한줄 요약 코멘트를 담은 'pageSummaries' 목록을 알맞은 순서대로 만들어 주세요. (단일 페이지 이미지일 경우도 pageSummaries에 1페이지 정보를 채워줍니다)\n" +
+      "5. 전체 문항 요약(전체수, 맞은수, 틀린수 및 100점 만점으로 계산한 환산 점수) 및 친절하고 다정한 격려의 한마디 총평(overallSummary)을 담아 주세요.\n" +
+      "6. 학생에게 맞춰진 강점 요약(strengths), 약점 요약(weaknesses), 그리고 향후 구체적인 오답 학습 전략(studyPlan) 리스트를 작성해 주세요.\n" +
       "모른 내용 및 해설은 반드시 친절하고 정성 가득한 한국어 경어체로 응답해야 합니다.";
 
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: [
-        {
-          inlineData: {
-            data: base64Data,
-            mimeType: detectedMimeType,
-          },
-        },
+        ...imageParts,
         {
           text: prompt,
         },
@@ -123,6 +139,36 @@ app.post("/api/analyze", async (req, res) => {
               items: { type: Type.STRING },
               description: "앞으로 성향 극복을 위한 행동 전략 및 학습 팁",
             },
+            pageSummaries: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  pageNumber: {
+                    type: Type.INTEGER,
+                    description: "페이지 번호 (1부터 시작)",
+                  },
+                  title: {
+                    type: Type.STRING,
+                    description: "이 페이지가 다루고 있는 주요 단원 및 부주제 타이틀",
+                  },
+                  correctCount: {
+                    type: Type.INTEGER,
+                    description: "이 페이지 내에서 정답을 맞힌 개수",
+                  },
+                  incorrectCount: {
+                    type: Type.INTEGER,
+                    description: "이 페이지 내에서 오답인 개수",
+                  },
+                  summary: {
+                    type: Type.STRING,
+                    description: "이 페이지 학습 성과에 대한 한 줄 맞춤 진단",
+                  },
+                },
+                required: ["pageNumber", "title", "correctCount", "incorrectCount", "summary"],
+              },
+              description: "각 페이지별 성과 분석 리포트 리스트",
+            },
             questions: {
               type: Type.ARRAY,
               items: {
@@ -131,6 +177,10 @@ app.post("/api/analyze", async (req, res) => {
                   number: {
                     type: Type.STRING,
                     description: "문항 번호 (예: '1', '2-1' 등)",
+                  },
+                  pageNumber: {
+                    type: Type.INTEGER,
+                    description: "이 문항이 기사 또는 인쇄된 페이지 번호 (1부터 시작)",
                   },
                   content: {
                     type: Type.STRING,
@@ -153,7 +203,7 @@ app.post("/api/analyze", async (req, res) => {
                     description: "해당 문제 핵심 풀이법, 오답 원인 분석 및 주요 개념 상세 해설",
                   },
                 },
-                required: ["number", "content", "studentAnswer", "correctAnswer", "status", "explanation"],
+                required: ["number", "pageNumber", "content", "studentAnswer", "correctAnswer", "status", "explanation"],
               },
             },
           },

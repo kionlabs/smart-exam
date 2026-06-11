@@ -1,4 +1,4 @@
-import { useState, useRef, DragEvent, ChangeEvent } from "react";
+import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
 import { 
   FileText, 
   Upload, 
@@ -47,9 +47,26 @@ const PRESET_SAMPLES = [
       "부등식 단원 학습 시 '음수로 나누기' 단계가 포함된 문항에 형광펜 투입하여 시각적 오류 예방 조치",
       "자신만의 '인공지능 오답 노트'를 작성하여 실수 패턴(주로 이항 단계의 부호 실수)을 누적 기록하고 분석하기"
     ],
+    pageSummaries: [
+      {
+        pageNumber: 1,
+        title: "일차부등식 기초 & 대입 연립방정식",
+        correctCount: 3,
+        incorrectCount: 0,
+        summary: "일차부등식의 기하학적 수직선 표현과 대입 연립방정식 전반을 매우 매끄럽게 소화하며 1페이지 만점을 달성했습니다."
+      },
+      {
+        pageNumber: 2,
+        title: "거리·속력·시간 문장제 & 오답 클리닉",
+        correctCount: 2,
+        incorrectCount: 1,
+        summary: "비교적 까다로운 거속시 연립 문장제 논리를 완벽히 조립했으나, 분수 계수의 공배수 연산 처리에 보완 필요성이 진단됩니다."
+      }
+    ],
     questions: [
       {
         number: "1",
+        pageNumber: 1,
         content: "다음 중 일차부등식인 것을 모두 고르고, 그 해를 수직선 위에 바르게 나타내시오.",
         studentAnswer: "ㄱ, ㄹ (바르게 그림)",
         correctAnswer: "ㄱ, ㄹ",
@@ -58,6 +75,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "2",
+        pageNumber: 1,
         content: "연립방정식 2x + y = 7, 3x - 2y = 7 의 해를 대입법을 이용하여 구하시오.",
         studentAnswer: "x = 3, y = 1",
         correctAnswer: "x = 3, y = 1",
@@ -66,6 +84,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "3",
+        pageNumber: 1,
         content: "소수가 포함된 연립방정식 0.3x - 0.2y = 0.8, x + 0.5y = 1 의 해를 구하시오.",
         studentAnswer: "x = 2, y = -1",
         correctAnswer: "x = 2, y = -1",
@@ -74,6 +93,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "4",
+        pageNumber: 2,
         content: "거리, 속력, 시간 문장제 문제: 집에서 도서관까지 4km 거리를 가는데 처음엔 시속 3km로 걷다가 도중에 시속 6km로 달려서 1시간 만에 도착했다. 걸어간 거리를 구하시오.",
         studentAnswer: "2 km",
         correctAnswer: "2 km",
@@ -82,6 +102,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "5",
+        pageNumber: 2,
         content: "연립방정식 0.2x + 0.5y = 1.1, 1/3x + 1/4y = 1 의 해를 입증하시오.",
         studentAnswer: "x = 2, y = 1.2 (오답)",
         correctAnswer: "x = 3, y = 1",
@@ -90,6 +111,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "6",
+        pageNumber: 2,
         content: "다음 일차부등식 3(x - 1) < 5x + 7 을 만족하는 최소의 정수 x를 구하시오.",
         studentAnswer: "-4",
         correctAnswer: "-4",
@@ -121,9 +143,26 @@ const PRESET_SAMPLES = [
       "빈칸 문장을 먼저 읽고 필자가 주장하는 뉘앙스 정답 단서 미리 우리말로 추론한 뒤 선지 비교 학습",
       "문장 간 관계를 지시해주는 연결어(Otherwise, However, Nonetheless) 기능 카드 암기"
     ],
+    pageSummaries: [
+      {
+        pageNumber: 1,
+        title: "낱말 쓰임 감별 & 고난도 과학 빈칸 추론",
+        correctCount: 1,
+        incorrectCount: 1,
+        summary: "신재생에너지 문맥 파악은 뛰어났으나, 과학적 환원주의 지문의 'cannot' 부정 조항을 무시해 함정 선지에 마킹함으로써 약점이 발견되었습니다."
+      },
+      {
+        pageNumber: 2,
+        title: "문장 배정 논리 & 순접·역접 연결사 구별",
+        correctCount: 2,
+        incorrectCount: 1,
+        summary: "Instead 지시 대조는 매우 정확하게 맞춰 주도적인 독해를 보였으나, 예외 사항의 대조를 뜻하는 'However' 판단 부문을 심화 강화해야 합니다."
+      }
+    ],
     questions: [
       {
         number: "1",
+        pageNumber: 1,
         content: "다음 글의 밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
         studentAnswer: "3번 (바르게 맞춤)",
         correctAnswer: "3번",
@@ -132,14 +171,16 @@ const PRESET_SAMPLES = [
       },
       {
         number: "2",
+        pageNumber: 1,
         content: "다음 빈칸에 들어갈 말로 가장 적절한 것을 고르시오. [과학적 환원주의의 한계와 유기적 통합]",
         studentAnswer: "1번 (오답 - 주제와 정반대 개념)",
         correctAnswer: "4번",
         status: "incorrect" as const,
-        explanation: "전형적인 고난도 빈칸 문항입니다. 본문은 개별 구성요소의 단순 합만으로는 생명 개체를 설명할 수 없다는 내용(유기주의)인 반면, 1번 선지는 '요소의 환원성'을 지지하는 내용입니다. 빈칸 바로 앞에 명시된 부정어 'cannot be understood by'를 결합시키지 못하고 주제어의 단어만 보고 성급히 마킹한 것으로 판단됩니다."
+        explanation: "전형적인 고난도 빈칸 문항입니다. 본문은 개별 구성요소의 단순 합만으로는 생명 개체를 설명할 수 없다는 내용(유기주의)인 반면, 1번 선지는 '요소의 환원성'을 지지하는 내용입니다. 빈칸 바로 앞에 명시된 부정어 'cannot be understood by'를 결합시키지 못하고 주제어의 단어만 보고 성급히 마킹한 것으로 판단된다면, 이 단원을 깊게 복습하세요."
       },
       {
         number: "3",
+        pageNumber: 2,
         content: "글의 흐름으로 보아, 주어진 문장이 들어가기에 가장 알맞은 곳을 고르시오.",
         studentAnswer: "4번 (바르게 맞춤)",
         correctAnswer: "4번",
@@ -148,6 +189,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "4",
+        pageNumber: 2,
         content: "다음 글의 주제로 가장 적절한 것을 고르시오. [정보화 시대의 개인정보 침해 및 자기결정권 저해]",
         studentAnswer: "2번 (바르게 맞춤)",
         correctAnswer: "2번",
@@ -156,6 +198,7 @@ const PRESET_SAMPLES = [
       },
       {
         number: "5",
+        pageNumber: 2,
         content: "다음 글의 빈칸 (A), (B)에 들어갈 말로 가장 적절한 것은?",
         studentAnswer: "1번 (오답)",
         correctAnswer: "2번",
@@ -166,9 +209,19 @@ const PRESET_SAMPLES = [
   }
 ];
 
+export interface UploadedFile {
+  id: string;
+  file: File | null;
+  preview: string;
+  name: string;
+  type: string;
+  size: number;
+}
+
 export default function App() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingStep, setLoadingStep] = useState<string>("인공지능 가동 테스트 중...");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -177,18 +230,19 @@ export default function App() {
   // Custom states for interactive view
   const [expandedQuestion, setExpandedQuestion] = useState<{ [key: string]: boolean }>({});
   const [activeTab, setActiveTab] = useState<"summary" | "weaknesses" | "plan">("summary");
+  const [selectedPageFilter, setSelectedPageFilter] = useState<number | "all">("all");
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto step messages animation during analysis
   const triggerLoadingAnimation = () => {
     const steps = [
-      "시험지 이미지를 정적 행렬 데이터로 인코딩하는 중...",
-      "수식 알고리즘 및 국영수 지문 파싱 완료 중...",
-      "학생이 손글씨로 적은 마킹 및 필기 분석 중...",
-      "각 문항별 맞춤형 정오답 대조 시험 채점 단계 가동 중...",
-      "틀린 문항 분석 및 오답 극복 행동 가강 전략 산출 중...",
-      "종합 학습 클리닉 피드백 보고서 완성을 기다리는 중..."
+      "시험지 파일 수집 및 분석 가동 준비 중...",
+      "수식 정적 변환 및 지문 해독 알고리즘 구성 중...",
+      "학생이 표기한 마킹 및 다단 레이아웃 파싱 중...",
+      "각 페이지별 맞춤형 문항 채점 모델 가동 중...",
+      "틀린 문항 요인 탐색 및 종합 클리닉 피드백 구성 중...",
+      "과목별 오답 대책 리포트 작성을 마치는 중..."
     ];
     let index = 0;
     setLoadingStep(steps[0]);
@@ -213,36 +267,97 @@ export default function App() {
     });
   };
 
-  // Handler for file drop and select
+  // File size and Myme verification helper rules 
+  const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+
+  const validateAndAddFiles = (filesList: File[]) => {
+    const validFiles: UploadedFile[] = [];
+    let currentErrors: string[] = [];
+
+    for (const file of filesList) {
+      const isImage = file.type.startsWith("image/");
+      const isPdf = file.type === "application/pdf";
+      const isSizeAcceptable = file.size <= MAX_FILE_SIZE;
+
+      if (!isImage && !isPdf) {
+        currentErrors.push(`${file.name}: 허용되지 않는 파일 형식입니다. JPG, PNG, WEBP 이미지 및 PDF 형태만 업로드 가능합니다.`);
+        continue;
+      }
+
+      if (!isSizeAcceptable) {
+        currentErrors.push(`${file.name}: 파일 크기가 15MB 제한을 초과합니다.`);
+        continue;
+      }
+
+      validFiles.push({
+        id: Math.random().toString(36).substring(2, 9) + "_" + Date.now(),
+        file,
+        preview: URL.createObjectURL(file),
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      });
+    }
+
+    if (currentErrors.length > 0) {
+      setErrorMsg(currentErrors.join("\n"));
+    }
+
+    if (validFiles.length > 0) {
+      setUploadedFiles((prev) => [...prev, ...validFiles]);
+    }
+  };
+
+  // Handler for file drag and select
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragging(false);
     setErrorMsg(null);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.type.startsWith("image/")) {
-        setSelectedFile(file);
-        setPreviewUrl(URL.createObjectURL(file));
-      } else {
-        setErrorMsg("이미지 파일(.png, .jpg, .jpeg)만 업로드할 수 있습니다.");
-      }
+      validateAndAddFiles(Array.from(e.dataTransfer.files));
     }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     setErrorMsg(null);
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      if (file.type.startsWith("image/")) {
-        setSelectedFile(file);
-        setPreviewUrl(URL.createObjectURL(file));
-      } else {
-        setErrorMsg("이미지 파일만 지원됩니다.");
+      validateAndAddFiles(Array.from(e.target.files));
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
     }
+  };
+
+  const removeFile = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setUploadedFiles((prev) => {
+      const match = prev.find((item) => item.id === id);
+      if (match && match.preview && !match.preview.startsWith("preset:")) {
+        URL.revokeObjectURL(match.preview);
+      }
+      return prev.filter((item) => item.id !== id);
+    });
+  };
+
+  const clearAllFiles = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    uploadedFiles.forEach((item) => {
+      if (item.preview && !item.preview.startsWith("preset:")) {
+        URL.revokeObjectURL(item.preview);
+      }
+    });
+    setUploadedFiles([]);
+    setErrorMsg(null);
   };
 
   const triggerFileSelect = () => {
@@ -251,20 +366,28 @@ export default function App() {
 
   // Run Real AI Analysis call
   const startAnalysis = async () => {
-    if (!previewUrl) return;
+    if (uploadedFiles.length === 0) return;
     setIsLoading(true);
     setErrorMsg(null);
     const animInterval = triggerLoadingAnimation();
 
     try {
-      // Find base64 representation of image
-      let base64Image = "";
-      if (selectedFile) {
-        base64Image = await fileToBase64(selectedFile);
-      } else {
-        // If it's a mock preview URL that isn't a File, we convert it or it's a fallback
-        base64Image = previewUrl;
-      }
+      const base64List = await Promise.all(
+        uploadedFiles.map(async (item) => {
+          if (item.file) {
+            const b64 = await fileToBase64(item.file);
+            return {
+              data: b64,
+              mimeType: item.file.type || "image/jpeg"
+            };
+          } else {
+            return {
+              data: item.preview,
+              mimeType: "image/jpeg"
+            };
+          }
+        })
+      );
 
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -272,8 +395,7 @@ export default function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image: base64Image,
-          mimeType: selectedFile?.type || "image/jpeg"
+          images: base64List
         }),
       });
 
@@ -285,7 +407,28 @@ export default function App() {
       }
 
       const data = await response.json();
+
+      // Fallback format check to guarantee multi-page support elements
+      if (!data.pageSummaries || data.pageSummaries.length === 0) {
+        data.pageSummaries = uploadedFiles.map((item, idx) => ({
+          pageNumber: idx + 1,
+          title: data.title ? `${data.title} - ${idx + 1}쪽` : `${idx + 1}페이지 분석 리포트`,
+          correctCount: idx === 0 ? data.correctCount : 0,
+          incorrectCount: idx === 0 ? data.incorrectCount : 0,
+          summary: idx === 0 && data.overallSummary 
+            ? (data.overallSummary.substring(0, 100) + "...") 
+            : `${idx + 1}번째 페이지의 문항 채점 및 입체 클리닉 분석 완료.`
+        }));
+      }
+
+      // Ensure every question has some pageNumber
+      data.questions = data.questions.map((q: any) => ({
+        ...q,
+        pageNumber: q.pageNumber || 1
+      }));
+
       setResult(data);
+      setSelectedPageFilter("all");
       
       // Auto-expand newly annotated incorrect answers for study
       const initialExpand: { [key: string]: boolean } = {};
@@ -310,10 +453,19 @@ export default function App() {
     const found = PRESET_SAMPLES.find(p => p.id === presetId);
     if (found) {
       setErrorMsg(null);
-      // Construct a simulated preview or use a styled SVG representation
-      setPreviewUrl("preset:" + presetId);
-      setSelectedFile(null);
+      clearAllFiles();
+      setUploadedFiles([
+        {
+          id: "preset_" + presetId,
+          file: null,
+          preview: "preset:" + presetId,
+          name: found.name,
+          type: "preset",
+          size: 0
+        }
+      ]);
       setResult(found as any);
+      setSelectedPageFilter("all");
       
       const initialExpand: { [key: string]: boolean } = {};
       found.questions.forEach((q) => {
@@ -326,11 +478,11 @@ export default function App() {
   };
 
   const handleReset = () => {
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    clearAllFiles();
     setResult(null);
     setErrorMsg(null);
     setExpandedQuestion({});
+    setSelectedPageFilter("all");
   };
 
   const toggleQuestionExpanded = (num: string) => {
@@ -380,79 +532,165 @@ export default function App() {
                 시험지 분석기
               </h1>
               <p className="text-base md:text-lg text-[#1a2744]/70 font-medium">
-                시험지 사진을 업로드하면 AI가 자동으로 채점하고 원인 분석과 오답 대책을 제시합니다.
+                시험지 사진들을 업로드하면 AI가 자동으로 채점하고 원인 분석과 오답 대책을 제시합니다.
               </p>
             </div>
 
             {/* Drag & Drop uploader card */}
             <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#1a2744]/10 space-y-6" id="uploader-box">
+              
+              {/* Upload Counter & Clear All Actions */}
+              <div className="flex justify-between items-center" id="upload-header-actions">
+                <span className="text-sm font-bold text-[#1a2744]">
+                  {uploadedFiles.length > 0 ? (
+                    <span className="bg-[#1a2744]/5 text-[#1a2744] px-3 py-1.5 rounded-full border border-[#1a2744]/10 inline-flex items-center gap-1.5 animate-pulse">
+                      <FileText className="w-4 h-4 text-[#f97316]" />
+                      <strong>{uploadedFiles.length}장</strong>의 시험지가 업로드됨
+                    </span>
+                  ) : (
+                    <span className="text-[#1a2744]/50 text-xs font-semibold">아직 업로드된 시험지가 없습니다.</span>
+                  )}
+                </span>
+                {uploadedFiles.length > 0 && (
+                  <button
+                    onClick={clearAllFiles}
+                    className="text-xs font-black text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl border border-red-200 transition-colors flex items-center gap-1 cursor-pointer"
+                    id="clear-all-uploads-btn"
+                  >
+                    <XCircle className="w-3.5 h-3.5 animate-spin-once" />
+                    전체 삭제
+                  </button>
+                )}
+              </div>
+
+              {/* Dotted border Dropzone area */}
               <div 
                 id="dropzone-area"
                 onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={triggerFileSelect}
                 className={`border-3 border-dashed rounded-2xl p-10 cursor-pointer transition-all flex flex-col items-center justify-center text-center group ${
-                  previewUrl 
-                    ? "border-[#f97316] bg-[#f97316]/3" 
-                    : "border-[#1a2744]/20 hover:border-[#f97316]/50 bg-[#1a2744]/2 hover:bg-[#1a2744]/3"
+                  isDragging 
+                    ? "border-[#f97316] bg-[#f97316]/5 scale-[1.01]" 
+                    : uploadedFiles.length > 0
+                      ? "border-[#1a2744]/30 bg-stone-50/50 hover:bg-stone-50 hover:border-[#f97316]/40"
+                      : "border-[#1a2744]/20 hover:border-[#f97316]/50 bg-[#1a2744]/2 hover:bg-[#1a2744]/3"
                 }`}
               >
                 <input 
                   type="file" 
                   ref={fileInputRef} 
                   onChange={handleFileChange} 
-                  accept="image/*" 
+                  accept="image/jpeg,image/png,image/webp,application/pdf" 
+                  multiple
                   className="hidden" 
                   id="exam-file-input"
                 />
 
-                {previewUrl ? (
-                  <div className="relative max-w-xs w-full overflow-hidden rounded-xl shadow-md border border-[#1a2744]/15 aspect-3/4 bg-stone-100" id="file-preview-card">
-                    {previewUrl.startsWith("preset:") ? (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-[#1a2744]/5 to-[#f97316]/5 text-[#1a2744]">
-                        <FileText className="w-12 h-12 mb-2 text-[#f97316]" />
-                        <p className="font-bold text-sm">체험용 시험지</p>
-                        <p className="text-xs text-[#1a2744]/60 text-center mt-1">Preset Template Loaded</p>
-                      </div>
-                    ) : (
-                      <img 
-                        src={previewUrl} 
-                        alt="시험지 미리보기" 
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-sm font-semibold">
-                      다른 사진으로 변경하려면 클릭
-                    </div>
+                <div className="space-y-4 py-2 flex flex-col items-center" id="empty-state-icons">
+                  <div className="w-16 h-16 rounded-full bg-[#f97316]/10 text-[#f97316] flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Upload className="w-8 h-8" />
                   </div>
-                ) : (
-                  <div className="space-y-4 py-4 flex flex-col items-center" id="empty-state-icons">
-                    <div className="w-16 h-16 rounded-full bg-[#f97316]/10 text-[#f97316] flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Upload className="w-8 h-8" />
-                    </div>
-                    <div className="space-y-2">
-                      <p className="font-bold text-lg text-[#1a2744]">시험지 사진을 여기에 놓거나 클릭하세요</p>
-                      <p className="text-sm text-[#1a2744]/60">JPEG, PNG, WEBP 등 지원 • 최대 15MB</p>
-                    </div>
+                  <div className="space-y-1.5">
+                    <p className="font-bold text-lg text-[#1a2744]">시험지 사진들이나 PDF 파일을 여기에 놓거나 클릭하세요</p>
+                    <p className="text-xs text-[#1a2744]/60">JPEG, PNG, WEBP, PDF 지원 • 각 파일 최대 15MB • 여러 장 동시 선택 가능</p>
                   </div>
-                )}
+                </div>
               </div>
+
+              {/* Uploaded Thumbnail horizontal track lists */}
+              {uploadedFiles.length > 0 && (
+                <div className="bg-stone-50/50 rounded-2xl p-4 border border-[#1a2744]/5 space-y-2" id="thumbnail-row-container" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-[11px] font-extrabold text-[#1a2744]/60 uppercase tracking-wider">시험지 순서 목록 (썸네일을 클릭하면 원본크기로 확인 가능)</p>
+                  
+                  <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-200">
+                    {uploadedFiles.map((item, idx) => {
+                      const isPreset = item.preview.startsWith("preset:");
+                      const isPdf = item.type === "application/pdf" || item.name.endsWith(".pdf");
+                      
+                      return (
+                        <div 
+                          key={item.id}
+                          className="relative bg-white border border-[#1a2744]/12 rounded-xl p-1.5 shrink-0 flex flex-col items-center shadow-sm hover:shadow-md hover:border-[#f97316]/30 transition-all group/thumb"
+                          style={{ width: "94px" }}
+                        >
+                          {/* Circular Badge: Page/Image sequence index count */}
+                          <span className="absolute -top-1.5 -left-1.5 w-6 h-6 bg-[#1a2744] text-white text-[11px] font-black rounded-full flex items-center justify-center shadow-md select-none">
+                            {idx + 1}
+                          </span>
+
+                          {/* Individual absolute small x button */}
+                          <button
+                            onClick={(e) => removeFile(item.id, e)}
+                            className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-md hover:scale-105 transition-all cursor-pointer z-10"
+                            title="삭제"
+                          >
+                            <span className="text-xs font-black">✕</span>
+                          </button>
+
+                          {/* Render Preview Frame */}
+                          <div 
+                            onClick={() => setZoomImage(item.preview)}
+                            className="w-20 h-24 rounded-lg bg-stone-100 border border-stone-200 cursor-pointer overflow-hidden relative"
+                          >
+                            {isPreset ? (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-[#1a2744]/5 text-[#1a2744] p-1.5">
+                                <FileText className="w-7 h-7 text-[#f97316]" />
+                                <span className="text-[9px] font-black tracking-tight text-center truncate w-full mt-1">프리셋 샘플</span>
+                              </div>
+                            ) : isPdf ? (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-red-55 text-red-700 p-1.5">
+                                <FileText className="w-7 h-7 text-red-600 animate-pulse" />
+                                <span className="text-[9px] font-black tracking-tight text-center truncate w-full mt-1">PDF 파일</span>
+                              </div>
+                            ) : (
+                              <img 
+                                src={item.preview} 
+                                alt={`시험지 ${idx + 1}쪽`} 
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition-opacity">
+                              크게보기
+                            </div>
+                          </div>
+
+                          {/* Truncated page label */}
+                          <span className="text-[9px] text-[#1a2744]/70 font-semibold truncate w-full text-center mt-1.5">
+                            {item.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+
+                    {/* Plus add file cell */}
+                    <button
+                      onClick={triggerFileSelect}
+                      className="w-20 h-[106px] border-2 border-dashed border-[#1a2744]/20 hover:border-[#f97316]/50 bg-white hover:bg-[#1a2744]/4 rounded-xl flex flex-col items-center justify-center text-[#1a2744]/60 hover:text-[#f97316] transition-all cursor-pointer group/add shrink-0"
+                    >
+                      <Upload className="w-5 h-5 group-hover/add:scale-110 transition-transform mb-1" />
+                      <span className="text-[10px] font-black">추가하기</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="space-y-3" id="analysis-trigger-block">
-                {previewUrl && (
+                {uploadedFiles.length > 0 && (
                   <button
                     id="trigger-analysis-btn"
                     onClick={startAnalysis}
                     className="w-full h-14 bg-[#f97316] text-white hover:bg-[#ea580c] active:translate-y-0.5 rounded-2xl font-bold text-lg shadow-lg shadow-[#f97316]/20 flex items-center justify-center space-x-2 transition-all cursor-pointer"
                   >
                     <Sparkles className="w-5 h-5 animate-pulse" />
-                    <span>분석 시작</span>
+                    <span>{uploadedFiles.length}장 분석 시작</span>
                   </button>
                 )}
 
                 {errorMsg && (
-                  <div className="bg-red-50 text-red-900 border border-red-200 p-4 rounded-xl flex items-start space-x-3 shadow-sm animate-fade-in" id="error-alert">
+                  <div className="bg-red-50 text-red-900 border border-red-200 p-4 rounded-xl flex items-start space-x-3 shadow-sm whitespace-pre-line" id="error-alert">
                     <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                     <div className="text-sm font-semibold">{errorMsg}</div>
                   </div>
@@ -745,15 +983,89 @@ export default function App() {
 
             </div>
 
+            {/* Page-by-page Analysis Report Block */}
+            {result.pageSummaries && result.pageSummaries.length > 0 && (
+              <div className="bg-white rounded-3xl p-6 md:p-8 border border-[#1a2744]/12 shadow-md space-y-4" id="page-by-page-diagnostic-reports">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#f97316]/10 text-[#f97316] flex items-center justify-center font-bold">
+                    <FileText className="w-4.5 h-4.5" />
+                  </div>
+                  <h3 className="text-lg font-black text-[#1a2744]">페이지별 입체 성취도 리포트</h3>
+                </div>
+                <p className="text-xs md:text-sm text-[#1a2744]/70 font-semibold leading-relaxed">
+                  각 페이지별 분석 카드를 클릭하시면, 해당 페이지의 핵심 오답 클리닉과 그 페이지에 해당하는 문제 목록만 아래에 모아보실 수 있습니다.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                  {/* All Pages Selector Card */}
+                  <button
+                    onClick={() => setSelectedPageFilter("all")}
+                    className={`p-4 rounded-2xl border text-left cursor-pointer transition-all ${
+                      selectedPageFilter === "all"
+                        ? "bg-[#1a2744] text-white border-[#1a2744] shadow-md scale-[1.01]"
+                        : "bg-white hover:bg-[#1a2744]/3 border-[#1a2744]/15 hover:border-[#1a2744]/30 text-[#1a2744]"
+                    }`}
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider">전체 리포트</span>
+                      <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${selectedPageFilter === "all" ? "bg-white/20 text-white" : "bg-[#1a2744]/10 text-[#1a2744]"}`}>
+                        {result.questions.length}문항
+                      </span>
+                    </div>
+                    <h4 className="font-extrabold text-sm mb-1">전체 합산 채점 결과</h4>
+                    <p className={`text-[11px] leading-relaxed line-clamp-2 ${selectedPageFilter === "all" ? "text-white/80" : "text-[#1a2744]/60"}`}>
+                      모든 페이지를 통합하여 문제별 클리닉 성취 상태를 일목요연하게 표시합니다.
+                    </p>
+                  </button>
+
+                  {result.pageSummaries.map((pageS) => {
+                    const isSelected = selectedPageFilter === pageS.pageNumber;
+                    const pageQuestions = result.questions.filter(q => q.pageNumber === pageS.pageNumber);
+                    return (
+                      <button
+                        key={pageS.pageNumber}
+                        onClick={() => setSelectedPageFilter(pageS.pageNumber)}
+                        className={`p-4 rounded-2xl border text-left cursor-pointer transition-all ${
+                          isSelected
+                            ? "bg-[#1a2744] text-white border-[#1a2744] shadow-md scale-[1.01]"
+                            : "bg-white hover:bg-[#1a2744]/3 border-[#1a2744]/15 hover:border-[#1a2744]/30 text-[#1a2744]"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[10px] font-black uppercase tracking-wider">{pageS.pageNumber}페이지 리포트</span>
+                          <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${isSelected ? "bg-emerald-500 text-white" : "bg-emerald-50 text-emerald-800 border border-emerald-100"}`}>
+                            정답 {pageS.correctCount} / 오답 {pageS.incorrectCount}
+                          </span>
+                        </div>
+                        <h4 className="font-extrabold text-sm mb-1 truncate">{pageS.title}</h4>
+                        <p className={`text-[11px] leading-relaxed line-clamp-2 ${isSelected ? "text-white/80" : "text-[#1a2744]/60"}`}>
+                          {pageS.summary}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Individual detailed question analysis */}
             <div className="space-y-4" id="individual-problems-container">
-              <h3 className="text-xl font-black text-[#1a2744] flex items-center space-x-2">
-                <BookOpen className="w-5.5 h-5.5 text-[#f97316]" />
-                <span>문항별 채점 & 해설 분석 리포트</span>
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1a2744]/5 pb-2">
+                <h3 className="text-xl font-black text-[#1a2744] flex items-center space-x-2">
+                  <BookOpen className="w-5.5 h-5.5 text-[#f97316]" />
+                  <span>문항별 채점 & 해설 분석 리포트</span>
+                </h3>
+                {selectedPageFilter !== "all" && (
+                  <span className="text-xs font-bold text-white bg-[#f97316] px-3 py-1 rounded-full animate-pulse self-start">
+                    현재 필터링 중: {selectedPageFilter}페이지 ({result.questions.filter(q => q.pageNumber === selectedPageFilter).length}문항)
+                  </span>
+                )}
+              </div>
 
               <div className="grid grid-cols-1 gap-4" id="questions-list-view">
-                {result.questions.map((q) => {
+                {result.questions
+                  .filter((q) => selectedPageFilter === "all" || q.pageNumber === selectedPageFilter)
+                  .map((q) => {
                   const isCorrect = q.status === "correct";
                   const isExpanded = !!expandedQuestion[q.number];
                   
@@ -789,6 +1101,11 @@ export default function App() {
                           <div>
                             <div className="flex items-center space-x-2">
                               <span className="font-extrabold text-[#1a2744]">문제 {q.number}번</span>
+                              {q.pageNumber && (
+                                <span className="text-[10px] font-bold bg-[#1a2744]/5 text-[#1a2744]/70 px-1.5 py-0.5 rounded border border-[#1a2744]/10">
+                                  {q.pageNumber}페이지
+                                </span>
+                              )}
                               <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
                                 isCorrect 
                                   ? "bg-emerald-100 text-emerald-800" 
@@ -869,6 +1186,47 @@ export default function App() {
           </div>
         </div>
       </footer>
+      {/* Zoom Modal Preview */}
+      {zoomImage && (
+        <div 
+          className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in"
+          onClick={() => setZoomImage(null)}
+        >
+          <div 
+            className="relative max-w-3xl w-full max-h-[85vh] bg-[#f5f0eb] rounded-3xl p-4 overflow-hidden border border-white/20 shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setZoomImage(null)}
+              className="absolute top-4 right-4 bg-black/60 hover:bg-black/80 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors font-bold text-lg z-[110] cursor-pointer"
+            >
+              ✕
+            </button>
+            
+            <div className="w-full h-full min-h-[40vh] flex items-center justify-center bg-stone-100 rounded-2xl overflow-y-auto p-2">
+              {zoomImage.startsWith("preset:") ? (
+                <div className="flex flex-col items-center justify-center p-12 text-[#1a2744]">
+                  <FileText className="w-20 h-20 text-[#f97316] mb-4 animate-pulse" />
+                  <h3 className="font-extrabold text-lg">체험용 프리셋 시험지</h3>
+                  <p className="text-xs text-[#1a2744]/60 mt-1.5 text-center">예약된 데모 템플릿입니다. 분석 결과는 사전에 채점되어 수집되어 있습니다.</p>
+                </div>
+              ) : zoomImage.endsWith(".pdf") || zoomImage.includes("application/pdf") ? (
+                <div className="flex flex-col items-center justify-center p-12 text-[#1a2744]">
+                  <FileText className="w-20 h-20 text-red-600 mb-4 animate-pulse" />
+                  <h3 className="font-extrabold text-lg">PDF 시험지 문서</h3>
+                  <p className="text-xs text-[#1a2744]/60 text-center max-w-sm mt-1.5">이 문서는 PDF 포맷입니다. 기계 정렬 및 다단 파싱 기술을 적용해 분석합니다.</p>
+                </div>
+              ) : (
+                <img 
+                  src={zoomImage} 
+                  alt="시험지 크게 보기" 
+                  className="max-w-full max-h-[75vh] object-contain rounded-lg animate-fade-in"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
